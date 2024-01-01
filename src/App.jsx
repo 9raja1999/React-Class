@@ -1,28 +1,44 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Button from "./components/forms/buttons/Button.jsx";
+import TextField from './components/forms/inputs/TextField.jsx';
 
 function App() {
-  const [task, setTask] = useState('')
+  const headingRef = useRef(null) // 0 || null
+  const taskRef = useRef(null)
+  const priorityRef = useRef(null)
+  const statusRef = useRef(null)
   const [list, setList] = useState([])
 
-  function handleChange(e) {
-    setTask(e.target.value)
-  }
+  useEffect(() =>{
+    taskRef.current.value = ""
+    priorityRef.current.value = ""
+    statusRef.current.value = ""
+  }, [list])
+
+
   function addTask() {
-    let newList = [...list]
-    newList.push(task)
-    setList(newList)
+    const data = taskRef.current.getChildData()
+    console.log("data", data);
+
+    // let newList = [...list,
+    //   `task : ${taskRef.current.value} 
+    //   | status : ${statusRef.current.value} 
+    //   | priority : ${priorityRef.current.value}`]
+    // setList(newList)
+    // headingRef.current.style.color = "red"
+    // headingRef.current.style.backgroundColor = "red"
   }
 
 
   return (
     <>
-      <h1>Todo App</h1>
+      <h1 ref={headingRef}>Todo App</h1>
 
-      <input
-        placeholder="Enter task"
-        onChange={handleChange}
-      />
+      <TextField placeholder="Your task" ref={taskRef}/>
+      <TextField placeholder="Priority" ref={priorityRef}/>
+      <TextField placeholder="Status" ref={statusRef}/>
+
+
       <Button title="ADD" handler={addTask} />
 
       <ul>
@@ -30,7 +46,7 @@ function App() {
           list.map((task, index) => {
             return <li key={index}>
               {task}
-              <Button title="delete" />
+              <Button title="delete" id={index}/>
             </li>
           })
         }
